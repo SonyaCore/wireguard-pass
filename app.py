@@ -50,17 +50,9 @@ class RailwayWireGuardManager:
     def __init__(self):
         self.init_database()
         self.init_server_keys()
-        self.mock_mode = self.check_mock_mode()
+        self.mock_mode = True
     
-    def check_mock_mode(self) -> bool:
-        """Check if we should run in mock mode (for Railway limitations)"""
-        try:
-            # Try to run wg command
-            result = subprocess.run(['wg', '--version'], capture_output=True, text=True, timeout=5)
-            return result.returncode != 0
-        except:
-            return True
-    
+
     def init_database(self):
         """Initialize SQLite database"""
         conn = sqlite3.connect(DATABASE_PATH)
