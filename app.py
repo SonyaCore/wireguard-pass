@@ -23,6 +23,8 @@ from flask import Flask, request, jsonify, send_file, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 
+
+mock_mode = True
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 
@@ -50,8 +52,6 @@ class RailwayWireGuardManager:
     def __init__(self):
         self.init_database()
         self.init_server_keys()
-        self.mock_mode = True
-    
 
     def init_database(self):
         """Initialize SQLite database"""
@@ -122,7 +122,7 @@ class RailwayWireGuardManager:
     
     def generate_private_key(self) -> str:
         """Generate WireGuard private key"""
-        if self.mock_mode:
+        if mock_mode:
             # Generate mock key for demo purposes
             return base64.b64encode(secrets.token_bytes(32)).decode('utf-8')
         
@@ -135,7 +135,7 @@ class RailwayWireGuardManager:
     
     def generate_public_key(self, private_key: str) -> str:
         """Generate WireGuard public key from private key"""
-        if self.mock_mode:
+        if mock_mode:
             # Generate mock public key
             return base64.b64encode(secrets.token_bytes(32)).decode('utf-8')
         
@@ -458,7 +458,7 @@ def status():
         'status': 'running',
         'version': '1.0.0',
         'server_endpoint': SERVER_ENDPOINT,
-        'mock_mode': wg_manager.mock_mode,
+        'mock_mode': mock_mode,
         'railway_url': RAILWAY_STATIC_URL
     }), 200
 
